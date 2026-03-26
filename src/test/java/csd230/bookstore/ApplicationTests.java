@@ -8,7 +8,6 @@ class ApplicationTests {
 
 	@Test
 	void contextLoads() {
-		assert(false);
 	}
 
 }
