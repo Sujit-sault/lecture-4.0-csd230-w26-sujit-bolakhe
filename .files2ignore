@@ -1,0 +1,21 @@
+# .files2ignore GenericPromptGeneratorV3
+ai_prompt*
+volumes/
+Timeline*.json
+assets/
+package-lock.json
+*.svg
+mvn.*
+
+node_modules/
+target/
+build/
+out/
+.gradle/
+.idea/
+.vscode/
+.git/
+
+*.class
+*.jar
+*.log
