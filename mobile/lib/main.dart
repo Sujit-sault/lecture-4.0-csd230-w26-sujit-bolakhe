@@ -46,11 +46,11 @@ class AuthState {
       final res = await http.post(
         Uri.parse('$baseUrl/auth/login'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'username': username, 'password': password}),
+        body: jsonEncode({'email': username, 'password': password}),
       );
       if (res.statusCode == 200) {
         final data = jsonDecode(res.body);
-        token = data['token'] ?? data['jwt'] ?? data['accessToken'];
+        token = data['token'] ?? data['jwt'] ?? data['accessToken'] ?? data['jwtToken'];
         isAdmin = username == 'admin';
         return true;
       }
@@ -298,25 +298,25 @@ class _BooksScreenState extends State<BooksScreen> {
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(
-              onRefresh: _loadBooks,
-              child: ListView.builder(
-                padding: const EdgeInsets.all(12),
-                itemCount: _books.length,
-                itemBuilder: (_, i) {
-                  final b = _books[i];
-                  return _ProductCard(
-                    title: b['title'] ?? '',
-                    subtitle: 'by ${b['author'] ?? 'Unknown'}',
-                    price: (b['price'] ?? 0).toDouble(),
-                    type: 'book',
-                    color: const Color(0xFF185FA5),
-                    icon: Icons.menu_book,
-                    onAddToCart: () => widget.onAddToCart({...b, 'type': 'book'}),
-                    onDelete: AuthState.isAdmin ? () => _deleteBook(b['id']) : null,
-                  );
-                },
-              ),
-            ),
+        onRefresh: _loadBooks,
+        child: ListView.builder(
+          padding: const EdgeInsets.all(12),
+          itemCount: _books.length,
+          itemBuilder: (_, i) {
+            final b = _books[i];
+            return _ProductCard(
+              title: b['title'] ?? '',
+              subtitle: 'by ${b['author'] ?? 'Unknown'}',
+              price: (b['price'] ?? 0).toDouble(),
+              type: 'book',
+              color: const Color(0xFF185FA5),
+              icon: Icons.menu_book,
+              onAddToCart: () => widget.onAddToCart({...b, 'type': 'book'}),
+              onDelete: AuthState.isAdmin ? () => _deleteBook(b['id']) : null,
+            );
+          },
+        ),
+      ),
     );
   }
 }
@@ -364,25 +364,25 @@ class _MagazinesScreenState extends State<MagazinesScreen> {
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(
-              onRefresh: _loadMagazines,
-              child: ListView.builder(
-                padding: const EdgeInsets.all(12),
-                itemCount: _magazines.length,
-                itemBuilder: (_, i) {
-                  final m = _magazines[i];
-                  return _ProductCard(
-                    title: m['title'] ?? '',
-                    subtitle: 'Publisher: ${m['publisher'] ?? 'Unknown'}',
-                    price: (m['price'] ?? 0).toDouble(),
-                    type: 'magazine',
-                    color: const Color(0xFF0F6E56),
-                    icon: Icons.newspaper,
-                    onAddToCart: () => widget.onAddToCart({...m, 'type': 'magazine'}),
-                    onDelete: AuthState.isAdmin ? () => _deleteMagazine(m['id']) : null,
-                  );
-                },
-              ),
-            ),
+        onRefresh: _loadMagazines,
+        child: ListView.builder(
+          padding: const EdgeInsets.all(12),
+          itemCount: _magazines.length,
+          itemBuilder: (_, i) {
+            final m = _magazines[i];
+            return _ProductCard(
+              title: m['title'] ?? '',
+              subtitle: 'Publisher: ${m['publisher'] ?? 'Unknown'}',
+              price: (m['price'] ?? 0).toDouble(),
+              type: 'magazine',
+              color: const Color(0xFF0F6E56),
+              icon: Icons.newspaper,
+              onAddToCart: () => widget.onAddToCart({...m, 'type': 'magazine'}),
+              onDelete: AuthState.isAdmin ? () => _deleteMagazine(m['id']) : null,
+            );
+          },
+        ),
+      ),
     );
   }
 }
@@ -440,25 +440,25 @@ class _DvdsScreenState extends State<DvdsScreen> {
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(
-              onRefresh: _loadDvds,
-              child: ListView.builder(
-                padding: const EdgeInsets.all(12),
-                itemCount: _dvds.length,
-                itemBuilder: (_, i) {
-                  final d = _dvds[i];
-                  return _ProductCard(
-                    title: d['title'] ?? '',
-                    subtitle: 'Dir. ${d['director'] ?? ''} · ${d['genre'] ?? ''} · ${d['releaseYear'] ?? ''} · ${d['rating'] ?? ''}',
-                    price: (d['price'] ?? 0).toDouble(),
-                    type: 'dvd',
-                    color: const Color(0xFF993C1D),
-                    icon: Icons.movie,
-                    onAddToCart: () => widget.onAddToCart({...d, 'type': 'dvd'}),
-                    onDelete: AuthState.isAdmin ? () => _deleteDvd(d['id']) : null,
-                  );
-                },
-              ),
-            ),
+        onRefresh: _loadDvds,
+        child: ListView.builder(
+          padding: const EdgeInsets.all(12),
+          itemCount: _dvds.length,
+          itemBuilder: (_, i) {
+            final d = _dvds[i];
+            return _ProductCard(
+              title: d['title'] ?? '',
+              subtitle: 'Dir. ${d['director'] ?? ''} · ${d['genre'] ?? ''} · ${d['releaseYear'] ?? ''} · ${d['rating'] ?? ''}',
+              price: (d['price'] ?? 0).toDouble(),
+              type: 'dvd',
+              color: const Color(0xFF993C1D),
+              icon: Icons.movie,
+              onAddToCart: () => widget.onAddToCart({...d, 'type': 'dvd'}),
+              onDelete: AuthState.isAdmin ? () => _deleteDvd(d['id']) : null,
+            );
+          },
+        ),
+      ),
     );
   }
 }
@@ -477,88 +477,88 @@ class CartScreen extends StatelessWidget {
       appBar: AppBar(title: const Text('Cart')),
       body: cart.isEmpty
           ? const Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.shopping_cart_outlined, size: 64, color: Colors.black26),
-                  SizedBox(height: 16),
-                  Text('Your cart is empty', style: TextStyle(color: Colors.black45)),
-                ],
-              ),
-            )
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.shopping_cart_outlined, size: 64, color: Colors.black26),
+            SizedBox(height: 16),
+            Text('Your cart is empty', style: TextStyle(color: Colors.black45)),
+          ],
+        ),
+      )
           : Column(
-              children: [
-                Expanded(
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(12),
-                    itemCount: cart.length,
-                    itemBuilder: (_, i) {
-                      final item = cart[i];
-                      return Card(
-                        margin: const EdgeInsets.only(bottom: 10),
-                        child: ListTile(
-                          leading: CircleAvatar(
-                            backgroundColor: const Color(0xFF0f1623),
-                            child: Text('${item['qty']}', style: const TextStyle(color: Color(0xFFe8b84b), fontWeight: FontWeight.bold)),
-                          ),
-                          title: Text(item['title'] ?? '', style: const TextStyle(fontWeight: FontWeight.w500)),
-                          subtitle: Text(item['type']?.toString().toUpperCase() ?? ''),
-                          trailing: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text('\$${((item['price'] ?? 0) * (item['qty'] ?? 1)).toStringAsFixed(2)}',
-                                style: const TextStyle(fontWeight: FontWeight.bold)),
-                              GestureDetector(
-                                onTap: () { cart.removeAt(i); onCartChanged(); },
-                                child: const Text('Remove', style: TextStyle(color: Colors.red, fontSize: 12)),
-                              ),
-                            ],
-                          ),
+        children: [
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.all(12),
+              itemCount: cart.length,
+              itemBuilder: (_, i) {
+                final item = cart[i];
+                return Card(
+                  margin: const EdgeInsets.only(bottom: 10),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: const Color(0xFF0f1623),
+                      child: Text('${item['qty']}', style: const TextStyle(color: Color(0xFFe8b84b), fontWeight: FontWeight.bold)),
+                    ),
+                    title: Text(item['title'] ?? '', style: const TextStyle(fontWeight: FontWeight.w500)),
+                    subtitle: Text(item['type']?.toString().toUpperCase() ?? ''),
+                    trailing: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text('\$${((item['price'] ?? 0) * (item['qty'] ?? 1)).toStringAsFixed(2)}',
+                            style: const TextStyle(fontWeight: FontWeight.bold)),
+                        GestureDetector(
+                          onTap: () { cart.removeAt(i); onCartChanged(); },
+                          child: const Text('Remove', style: TextStyle(color: Colors.red, fontSize: 12)),
                         ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(20),
+            color: const Color(0xFF0f1623),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Total', style: TextStyle(color: Colors.white70, fontSize: 16)),
+                    Text('\$${_total.toStringAsFixed(2)}',
+                        style: const TextStyle(color: Color(0xFFe8b84b), fontSize: 20, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      cart.clear();
+                      onCartChanged();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Order placed successfully!'),
+                            backgroundColor: Color(0xFF2eb87a)),
                       );
                     },
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  color: const Color(0xFF0f1623),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('Total', style: TextStyle(color: Colors.white70, fontSize: 16)),
-                          Text('\$${_total.toStringAsFixed(2)}',
-                            style: const TextStyle(color: Color(0xFFe8b84b), fontSize: 20, fontWeight: FontWeight.bold)),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            cart.clear();
-                            onCartChanged();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Order placed successfully!'),
-                                backgroundColor: Color(0xFF2eb87a)),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFe8b84b),
-                            foregroundColor: const Color(0xFF0f1623),
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                          ),
-                          child: const Text('Confirm Order', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                        ),
-                      ),
-                    ],
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFe8b84b),
+                      foregroundColor: const Color(0xFF0f1623),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    ),
+                    child: const Text('Confirm Order', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                   ),
                 ),
               ],
             ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -590,7 +590,7 @@ class _AddBookScreenState extends State<AddBookScreen> {
       if (mounted) Navigator.pop(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to save book')));
+          const SnackBar(content: Text('Failed to save book')));
     }
     setState(() => _saving = false);
   }
@@ -628,8 +628,8 @@ class _AddBookScreenState extends State<AddBookScreen> {
   }
 
   Widget _field(TextEditingController c, String label, {TextInputType? keyboard}) =>
-    TextField(controller: c, keyboardType: keyboard,
-      decoration: InputDecoration(labelText: label, border: const OutlineInputBorder()));
+      TextField(controller: c, keyboardType: keyboard,
+          decoration: InputDecoration(labelText: label, border: const OutlineInputBorder()));
 }
 
 // ── Add DVD Screen ─────────────────────────────────────────
@@ -665,7 +665,7 @@ class _AddDvdScreenState extends State<AddDvdScreen> {
       if (mounted) Navigator.pop(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to save DVD')));
+          const SnackBar(content: Text('Failed to save DVD')));
     }
     setState(() => _saving = false);
   }
@@ -715,8 +715,8 @@ class _AddDvdScreenState extends State<AddDvdScreen> {
   }
 
   Widget _field(TextEditingController c, String label, {TextInputType? keyboard}) =>
-    TextField(controller: c, keyboardType: keyboard,
-      decoration: InputDecoration(labelText: label, border: const OutlineInputBorder()));
+      TextField(controller: c, keyboardType: keyboard,
+          decoration: InputDecoration(labelText: label, border: const OutlineInputBorder()));
 }
 
 // ── Reusable Product Card ──────────────────────────────────
@@ -759,7 +759,7 @@ class _ProductCard extends StatelessWidget {
                   Text(subtitle, style: TextStyle(color: Colors.grey[600], fontSize: 12)),
                   const SizedBox(height: 6),
                   Text('\$${price.toStringAsFixed(2)}',
-                    style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 15)),
+                      style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 15)),
                 ],
               ),
             ),
