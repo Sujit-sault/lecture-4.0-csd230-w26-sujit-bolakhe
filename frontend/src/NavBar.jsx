@@ -9,17 +9,20 @@ function Navbar({ cartCount }) {
             <Link to="/">🏠 Home</Link>
             <Link to="/inventory">📚 Books</Link>
             <Link to="/magazines">📰 Magazines</Link>
+            <Link to="/dvds">🎬 DVDs</Link>
             <Link to="/cart">🛒 Cart ({cartCount})</Link>
-            
+
             {isAdmin && (
                 <>
                     <Link to="/add">➕ Add Book</Link>
                     <Link to="/add-magazine">➕ Add Magazine</Link>
+                    <Link to="/add-dvd">➕ Add DVD</Link>
                 </>
             )}
-            
+
             <Link to="/logout" style={{ color: "#ff4444", marginLeft: "auto" }}>🚪 Logout</Link>
         </nav>
     );
 }
+
 export default Navbar;

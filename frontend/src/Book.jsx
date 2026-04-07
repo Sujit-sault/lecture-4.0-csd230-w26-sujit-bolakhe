@@ -13,7 +13,6 @@ function Book({ id, title, author, price, onDelete, onUpdate, onAddToCart }) {
         onUpdate(id, updatedBook);
         setIsEditing(false);
     };
-
     if (isEditing) {
         return (
             <div className="book-row editing">
