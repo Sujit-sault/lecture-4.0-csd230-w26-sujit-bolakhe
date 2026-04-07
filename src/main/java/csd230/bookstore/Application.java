@@ -126,8 +126,10 @@ public class Application implements CommandLineRunner {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                // Allow access to all /api endpoints from any origin
-                registry.addMapping("/api/**").allowedOrigins("*");
+                registry.addMapping("/**")
+                        .allowedOrigins("*")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*");
             }
         };
     }
